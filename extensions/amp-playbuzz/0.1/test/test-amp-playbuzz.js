@@ -16,7 +16,7 @@
 
 import '../amp-playbuzz';
 import {toggleExperiment} from '../../../../src/experiments';
-
+import {parseQueryString, parseUrl} from '../../../../src/url';
 
 function startsWith(string, searchString) {
   return string.substr(0, searchString.length) === searchString;
@@ -91,6 +91,12 @@ describes.realWin('amp-playbuzz', {
   function testIframe(iframe, itemSrcUrl) {
     expect(iframe).to.not.be.null;
     expect(startsWith(iframe.src, itemSrcUrl)).to.be.true;
+
+    const testPageLinkTagUrl = 'https://www.some-site.com/test-amp-playbuzz';
+    const url = parseUrl(iframe.src);
+    const iframeParams = parseQueryString(url.search);
+    expect(iframeParams.parentUrl).to.be.equals(testPageLinkTagUrl);
+
     expect(iframe.className).to.match(/i-amphtml-fill-content/);
     // This is important to avoid sizing issues.
     expect(iframe.getAttribute('scrolling')).to.equal('no');
@@ -151,7 +157,6 @@ describes.realWin('amp-playbuzz', {
   it('builds a placeholder image without inserting iframe', () => {
     const src = createItemSrc().withUrl('https://www.playbuzz.com/bob/bobs-life');
     return getIns(src, createOptionalParams(), true, ins => {
-      // console.log(ins);
       const placeholder = ins.querySelector('[placeholder]');
       const iframe = ins.querySelector('iframe');
       expect(iframe).to.be.null;

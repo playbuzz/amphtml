@@ -256,15 +256,16 @@ class AmpPlaybuzz extends AMP.BaseElement {
    */
   generateEmbedSourceUrl_() {
     const canonicalUrl = Services.documentInfoForDoc(this.element).canonicalUrl;
-    const parsedPageUrl = parseUrl(canonicalUrl);
+    const canonicalUrlWithoutFragment = removeFragment(canonicalUrl);
+    const parsedPageUrl = parseUrl(canonicalUrlWithoutFragment);
     const params = {
       itemUrl: this.iframeSrcUrl_,
       relativeUrl: parseUrl(this.iframeSrcUrl_).pathname,
       displayItemInfo: this.displayItemInfo_,
       displayShareBar: this.displayShareBar_,
       displayComments: this.displayComments_,
-      parentUrl: removeFragment(parsedPageUrl.href),
-      parentHost: parsedPageUrl.host,
+      parentUrl: encodeURIComponent(parsedPageUrl.href),
+      parentHost: encodeURIComponent(parsedPageUrl.host),
     };
 
     const embedUrl = utils.composeEmbedUrl(params);
